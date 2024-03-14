@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "Name": "Iqbal Pradipta",
+    "Username": "iqbalpradipta01",
+    "Post_time": "4h",
+    "Status": "Yaudahlah ya",
+    "Like_count": 30,
+    "Replies": 12
+  },
+  {
+    "id": 2,
+    "Name": "Joko Kopling",
+    "Username": "Jokoplak90",
+    "Post_time": "3h",
+    "Status": "Yaudah deh lah ya",
+    "Like_count": 5,
+    "Replies": 10
+  },
+  {
+    "id": 3,
+    "Name": "Yanto",
+    "Username": "yantooooo",
+    "Post_time": "2h",
+    "Status": "Sip lah",
+    "Image": "https://disk.mediaindonesia.com/files/news/2022/12/30/WhatsApp%20Image%202022-12-22%20at%2017.07.10%20(1).jpg",
+    "Like_count": 300,
+    "Replies": 1200
+  },
+  {
+    "id": 4,
+    "Name": "Mr Kowalawzoski",
+    "Username": "kowakowa19008",
+    "Post_time": "1h",
+    "Status": "Ada Zeta Coy",
+    "Image": "https://bit.ly/dan-abramov",
+    "Like_count": 30,
+    "Replies": 12
+  },
+  {
+    "id": 5,
+    "Name": "Solid",
+    "Username": "solid0819823198",
+    "Post_time": "30m",
+    "Status": "Zetatatatata",
+    "Image": "https://bit.ly/dan-abramov",
+    "Like_count": 1,
+    "Replies": 3
+  }
+]
