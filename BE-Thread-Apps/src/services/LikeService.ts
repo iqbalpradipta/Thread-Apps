@@ -1,6 +1,7 @@
 import { Repository } from 'typeorm';
 import { Likes } from '../entities/Likes';
 import { AppDataSource } from '../data-source';
+import { redisClient } from '../libs/redis';
 
 export default new (class LikesService {
   private readonly LikesRepository: Repository<Likes> = AppDataSource.getRepository(Likes);
@@ -19,8 +20,14 @@ export default new (class LikesService {
         return { messages: 'success unlike threads' };
       }
 
-      const likeThreads = await this.LikesRepository.createQueryBuilder().insert().into(Likes).values(data).execute();
-
+      const likeThreads = await this.LikesRepository
+      .createQueryBuilder()
+      .insert()
+      .into(Likes)
+      .values(data)
+      .execute();
+      
+      await redisClient.del('threads')
       return {
         messages: 'success like threads',
         data,

@@ -1,6 +1,7 @@
 export interface IFollows {
   id?: number;
   usersFollowing: IUsersFollow;
+  usersFollower: IUsersFollow;
 }
 
 export interface IUsersFollow {

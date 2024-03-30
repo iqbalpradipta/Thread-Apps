@@ -53,7 +53,7 @@ export default new (class ThreadsController {
   // }
 
   async insertThreads(req: Request, res: Response) {
-    ThreadService.insertThreads(req,res)
+    ThreadService.insertThreads(req, res);
   }
 
   async updateThreads(req: Request, res: Response) {
@@ -72,7 +72,7 @@ export default new (class ThreadsController {
   }
   async deleteThreads(req: Request, res: Response) {
     try {
-      const id = parseInt(req.params.id, 10)
+      const id = parseInt(req.params.id, 10);
       const response = await ThreadService.deleteThreads(id);
       res.status(200).json(response);
     } catch (error) {

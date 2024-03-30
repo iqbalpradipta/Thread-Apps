@@ -7,11 +7,7 @@ export default new (class FollowingServices {
 
   async followings(data: object | any, id: number): Promise<object> {
     try {
-      const getFollowing = await this.FollowingRepository
-      .createQueryBuilder('following')
-      .leftJoinAndSelect('following.usersFollowing', 'usersFollowing')
-      .where({ usersFollowing: id, usersFollower: data.usersFollower })
-      .getOne();
+      const getFollowing = await this.FollowingRepository.createQueryBuilder('following').leftJoinAndSelect('following.usersFollowing', 'usersFollowing').where({ usersFollowing: id, usersFollower: data.usersFollower }).getOne();
 
       if (getFollowing) {
         await this.unfollow(getFollowing.id);
@@ -21,12 +17,7 @@ export default new (class FollowingServices {
         };
       }
 
-      const following = await this.FollowingRepository
-      .createQueryBuilder()
-      .insert()
-      .into(Following)
-      .values(data)
-      .execute();
+      const following = await this.FollowingRepository.createQueryBuilder().insert().into(Following).values(data).execute();
 
       return {
         messages: 'success following users',
@@ -40,42 +31,36 @@ export default new (class FollowingServices {
 
   async getFollowing(id): Promise<object> {
     try {
-      const getFollowing = await this.FollowingRepository
-      .createQueryBuilder('following')
-      .leftJoinAndSelect('following.usersFollowing', 'usersFollowing')
-      .where('following.usersFollower = :id', { id })
-      .getMany();
-      
+      const getFollowing = await this.FollowingRepository.createQueryBuilder('following')
+        .leftJoinAndSelect('following.usersFollowing', 'usersFollowing')
+        .where('following.usersFollower = :id', { id })
+        .getMany();
 
       return {
         messages: 'succes get data following',
-        data: getFollowing
+        data: getFollowing,
       };
     } catch (error) {
       throw error;
     }
   }
 
-  
-
   async getFollower(id): Promise<object> {
     try {
-      const getFollower = await this.FollowingRepository
-      .createQueryBuilder('following')
+      const getFollower = await this.FollowingRepository.
+      createQueryBuilder('following')
       .leftJoinAndSelect('following.usersFollower', 'usersFollower')
       .where('following.usersFollowing = :id', { id })
       .getMany();
 
       return {
         messages: 'succes get data following',
-        data: getFollower
+        data: getFollower,
       };
     } catch (error) {
       throw error;
     }
   }
-
-  
 
   async unfollow(id: number): Promise<object> {
     try {

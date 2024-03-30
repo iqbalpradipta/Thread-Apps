@@ -5,7 +5,7 @@ export default new (class LikesController {
   async insertLikes(req: Request, res: Response) {
     try {
       const data = req.body;
-      data.users = res.locals.loginSession.id
+      data.users = res.locals.loginSession.Payload.id
 
       const response = await LikeService.insertLike(data);
       res.status(201).json(response);

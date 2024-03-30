@@ -2,13 +2,13 @@ import { Divider, Avatar, Flex, Button, Box, Text, Image, Link } from '@chakra-u
 import { Link as ChakraRouterLink, useParams } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa';
 import { MdOutlineComment } from 'react-icons/md';
-import ButtonLikes from '../../features/buttonLike';
 import ReplyThreads from '../Reply/replyThreads';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../stores/types';
 import { API } from '../../libs/api';
 import { useEffect } from 'react';
 import { GET_DETAIL } from '../../stores/rootReducer';
+import ButtonLikes from '../Like/ButtonLikes';
 
 function ThreadsDetail() {
   const dispatch = useDispatch();
@@ -63,7 +63,7 @@ function ThreadsDetail() {
             <Image src={thread.data.image} />
           </Box>
           <Flex alignItems="center">
-            <ButtonLikes iniLike={thread.data.number_of_likes} />
+            <ButtonLikes count={thread.data.number_of_likes} threads={thread.data.id} />
             <Button display="flex" alignItems="center" colorScheme="#1d1d1d" gap={2} p={1} textColor="#616161" fontSize="14px">
               <MdOutlineComment />
               <Text>{thread.data.number_of_replies} Replies</Text>

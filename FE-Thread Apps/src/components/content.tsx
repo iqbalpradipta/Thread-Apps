@@ -33,7 +33,7 @@ function Content() {
     }
   };
 
-  console.log(data)
+  console.log(`ini threads`, data)
 
   const handleSubmit = async () => {
     try {

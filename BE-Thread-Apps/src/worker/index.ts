@@ -2,6 +2,7 @@ import { AppDataSource } from "../data-source"
 import cloudinary from "../libs/cloudinary"
 import * as amqp from "amqplib"
 import "dotenv/config"
+import threadWorker from "./threadWorker";
 
 export default new (class WorkerHub {
   constructor() {
@@ -11,7 +12,7 @@ export default new (class WorkerHub {
 
         const connection = await amqp.connect(process.env.URL_CONNECT);
 
-        // ThreadWorker.create(process.env.QUEUE_NAME, connection);
+        threadWorker.create(process.env.QUEUE_THREAD, connection);
         console.log('WORKER RUNNING');
       })
       .catch((error) => console.log(error));

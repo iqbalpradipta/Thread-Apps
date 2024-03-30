@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, FormLabel, Icon, Input } from '@chakra-ui/react';
+import { Avatar, Box, Button, Divider, FormControl, FormLabel, Icon, Input } from '@chakra-ui/react';
 import { LuImagePlus } from 'react-icons/lu';
 import ReplyList from './replyList';
 import { useState } from 'react';
@@ -10,12 +10,13 @@ import { RootState } from '../../stores/types';
 
 function ReplyThreads() {
   const dispatch = useDispatch();
-  const data: any = useSelector((state: RootState) => state.getReply);
+  const data: any = useSelector((state: RootState) => state.postReply);
   const [file, setFile] = useState<File | null>(null);
+  const token = sessionStorage.getItem('token');
+
   const navigate = useNavigate();
 
   const { id } = useParams();
-  console.log(id);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -29,27 +30,28 @@ function ReplyThreads() {
         POST_REPLY({
           ...data,
           [name]: value,
+          threads: id,
         })
       );
     }
   };
 
-  console.log(data);
+  console.log('ini data', data);
 
   const handleSubmit = async () => {
     try {
       if (file) {
-        const setData = { ...data, image: file };
-        await API.post('/replies', setData, {
+        const setData = { ...data, image: file, threads: id };
+        await API.post(`/replies`, setData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
-        navigate(`/thread/${id}`, { replace: true });
+        navigate(`/threads/${id}`, { replace: true });
         window.location.reload();
       } else {
         await API.post('/replies', data);
-        navigate(`/thread/${id}`, { replace: true });
+        navigate(`/threads/${id}`, { replace: true });
         window.location.reload();
       }
     } catch (error) {
@@ -58,25 +60,34 @@ function ReplyThreads() {
     }
   };
 
-  // Change param as post in BE
-
   return (
     <>
-      <Box>
-        <Box display="flex" gap="10px" pt="20px" bgColor="#1d1d1d">
-          <Avatar name="Dan Abrahmov" src="https://bit.ly/dan-abramov" />
-          <Input variant="unstyled" pb="10px" resize="none" color="white" placeholder="Reply!" value={data.content} name="content" onChange={handleChange} />
-          <Box fontSize="25px" display="flex" alignItems="center">
-            <FormLabel htmlFor="image">
-              <Input type="file" id="image" name="image" hidden onChange={handleChange} />
-              <Icon name="image" id="image" as={LuImagePlus} />
-            </FormLabel>
-            <Button bg="#04A51E" borderRadius={100} textColor="#fff" m={3} w="100%" onClick={handleSubmit}>
-              Reply Post
-            </Button>
-          </Box>
-        </Box>
-        <ReplyList />
+      <Box backgroundColor="#1d1d1d" p={1.5}>
+        {token ? (
+          <>
+            <Box display="flex" gap="20px" alignContent="center" pt="20px" color="#07941E" ps="10px">
+              <Avatar name="Dan Abrahmov" src="https://bit.ly/dan-abramov" />
+              <Input variant="unstyled" pb="10px" resize="none" color="white" placeholder="What is Happening?!" value={data.content} name="content" onChange={handleChange} />
+              <Box fontSize="25px" display="flex">
+                <FormControl>
+                  <FormLabel htmlFor="image">
+                    <Input type="file" id="image" name="image" style={{ display: 'none' }} onChange={handleChange} />
+                    <Icon as={LuImagePlus} />
+                  </FormLabel>
+                </FormControl>
+                <Button bg="#04A51E" borderRadius={100} textColor="#fff" m={3} w="80px" onClick={handleSubmit}>
+                  Reply
+                </Button>
+              </Box>
+            </Box>
+            <Divider colorScheme="gray" size="100px" />
+            <ReplyList />
+          </>
+        ) : (
+          <>
+            <ReplyList />
+          </>
+        )}
       </Box>
     </>
   );

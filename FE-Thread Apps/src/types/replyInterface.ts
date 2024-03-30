@@ -1,4 +1,4 @@
-import { IThreads, IUsers } from './threadsInterface';
+import {  IUsers } from './threadsInterface';
 
 export interface IReply {
   id?: number;
@@ -6,7 +6,6 @@ export interface IReply {
   image: string
   created_at: string;
   users: IUsers;
-  replies: IReplyDetail[];
 }
 
 export interface IReplyDetail {
@@ -18,6 +17,7 @@ export interface IReplyDetail {
 export interface IReplyPost {
   id?: number;
   content?: string;
+  threads?: number;
   image?: FileList | null;
   created_at?: string
 }

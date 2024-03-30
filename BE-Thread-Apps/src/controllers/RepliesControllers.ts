@@ -1,11 +1,25 @@
 import { Request, Response } from 'express';
 import RepliesService from '../services/RepliesService';
+import cloudinaryConfig from '../libs/cloudinary';
+import { promisify } from 'util';
+import * as fs from 'fs'
+
+const deleteFile = promisify(fs.unlink);
 
 export default new (class RepliesControllers {
   async insertReplies(req: Request, res: Response) {
     try {
       const data = req.body;
-      data.users = res.locals.loginSession.Payload
+      data.users = res.locals.loginSession.Payload;
+      let img = null;
+      if (req.file) {
+        data.image = res.locals.filename;
+        const cloudinary = await cloudinaryConfig.destination(data.image);
+        data.image = cloudinary
+        await deleteFile(`src/uploadFiles/${res.locals.filename}`)
+      } else {
+        data.image = img;
+      }
 
       const response = await RepliesService.InsertReplies(data);
       res.status(201).json(response);

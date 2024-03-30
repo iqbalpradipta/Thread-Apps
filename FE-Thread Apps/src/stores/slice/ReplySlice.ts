@@ -1,36 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { IReply, IReplyPost } from '../../types/replyInterface';
+import { IReplyPost } from '../../types/replyInterface';
 
-const initialReplySlice: { data: IReply } = {
-  data: {
-    id: 0,
-    content: '',
-    image: '',
-    created_at: '',
-    users: {
-      fullName: '',
-      username: '',
-      email: '',
-    },
-    replies: []
-  },
-};
 
 const initialReplyPostSlice: {data: IReplyPost} = {
   data: {
     content: '',
-    created_at: '',
+    threads: 0,
     image: null,
   }
 }
 
+const initialReplySlice = {
+  data: [],
+};
 
 export const ReplySlice = createSlice({
   name: 'reply',
   initialState: initialReplySlice,
   reducers: {
     GET_REPLY(state, action) {
-      state.data = action.payload;
+      state.data = action.payload.data;
     },
   },
 });
@@ -39,8 +28,11 @@ export const ReplyPostSlice = createSlice({
   name: 'reply',
   initialState: initialReplyPostSlice,
   reducers: {
-    POST_REPLY(state, action) {
-      state.data = action.payload
-    }
+    POST_REPLY: (state, action) => {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
   }
 })
