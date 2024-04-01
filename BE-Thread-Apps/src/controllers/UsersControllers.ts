@@ -4,11 +4,11 @@ import UsersServices from '../services/UsersServices';
 export default new (class UsersController {
   async Suggest(req: Request, res: Response) {
     try {
-      const token = res.locals.loginSession.Payload.id
+      const token = res.locals.loginSession.Payload.id;
       const response = await UsersServices.Suggest(token);
       res.status(200).json(response);
     } catch (error) {
-      console.log(error)
+      console.log(error);
       res.status(500).json(error);
     }
   }
@@ -32,13 +32,15 @@ export default new (class UsersController {
     }
   }
 
-  
-
   async updateUser(req: Request, res: Response) {
     try {
       const id = req.params.id;
-      const data = req.body.data;
-      const response = await UsersServices.updateUsers(data, id)
+      const data = {
+        fullName: req.body.fullName,
+        username: req.body.username,
+        bio: req.body.bio,
+      };
+      const response = await UsersServices.updateUsers(data, id);
       res.status(200).json(response);
     } catch (error) {
       res.status(500).json(error);
@@ -47,12 +49,11 @@ export default new (class UsersController {
 
   async deleteUser(req: Request, res: Response) {
     try {
-        const id = req.params.id
-        const response = await UsersServices.deleteUsers(id)
-        res.status(200).json(response)
+      const id = req.params.id;
+      const response = await UsersServices.deleteUsers(id);
+      res.status(200).json(response);
     } catch (error) {
-        res.status(500).json(error)
+      res.status(500).json(error);
     }
   }
-
 })();

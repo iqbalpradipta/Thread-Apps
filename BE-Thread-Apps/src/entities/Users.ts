@@ -25,6 +25,9 @@ export class Users {
   photo_profile: string
 
   @Column({nullable: true})
+  background_profile: string
+
+  @Column({nullable: true})
   bio: string;
 
   @CreateDateColumn()

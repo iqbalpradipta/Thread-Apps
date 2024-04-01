@@ -19,12 +19,10 @@ function ThreadsDetail() {
     try {
       const response = await API.get(`/threads/${id}`);
       dispatch(GET_DETAIL(response.data.data));
-    //   console.log(response.data.data);
     } catch (error) {
       throw error;
     }
   };
-
 
   useEffect(() => {
     getThreadDetail();
@@ -39,7 +37,7 @@ function ThreadsDetail() {
             </Button>
           </Link>
           <Box ps="14px">
-            <Text color="white" fontSize="25px">
+            <Text color="white" fontSize="25px" mt="10px">
               Status
             </Text>
           </Box>

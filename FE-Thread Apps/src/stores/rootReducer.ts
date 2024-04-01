@@ -1,7 +1,7 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { threadDetailSlice, threadPostSlice, threadSlice } from './slice/threadSlice';
 import { authSlice } from './slice/authSlice';
-import { usersSlice, usersGetSlice } from './slice/usersSlice';
+import { usersSlice, usersGetSlice, usersUpdateSlice } from './slice/usersSlice';
 import { getFollowSlice, postFollowSlice } from './slice/FollowSlice';
 import { ReplyPostSlice, ReplySlice } from './slice/ReplySlice';
 import { PostLikeSlice } from './slice/likesSlice';
@@ -17,6 +17,7 @@ export const { POST_FOLLOW } = postFollowSlice.actions
 export const { GET_REPLY } =  ReplySlice.actions
 export const { POST_REPLY } = ReplyPostSlice.actions
 export const { POST_LIKE } = PostLikeSlice.actions
+export const { UPDATE_USERS } = usersUpdateSlice.actions
 
 export const threadReducer = threadSlice.reducer;
 export const threadPostReducer = threadPostSlice.reducer;
@@ -29,6 +30,7 @@ export const postFollowReducer = postFollowSlice.reducer
 export const getReplyReducer = ReplySlice.reducer
 export const postReplyReducer = ReplyPostSlice.reducer
 export const postLikeReducer = PostLikeSlice.reducer
+export const updateUsersReducer = usersUpdateSlice.reducer
 
 
 
@@ -44,6 +46,7 @@ export const rootReducer = combineReducers({
   getReply: getReplyReducer,
   postReply: postReplyReducer,
   postLike: postLikeReducer,
+  updateUsers: updateUsersReducer
 });
 
 export const store = configureStore({

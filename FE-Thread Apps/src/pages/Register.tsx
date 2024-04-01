@@ -1,4 +1,4 @@
-import { Box, Container, Text, Link, Input, Button } from '@chakra-ui/react';
+import { Box, Container, Text, Link, Input, Button, useToast } from '@chakra-ui/react';
 import React from 'react';
 import { Link as ReactRouterLink, useNavigate } from 'react-router-dom';
 import { API } from '../libs/api';
@@ -11,6 +11,7 @@ function Register() {
     password: '',
   });
   const navigate = useNavigate();
+  const toast = useToast();
 
   const handleChange = (e: any) => {
     setDataRegister({
@@ -27,9 +28,26 @@ function Register() {
         password: dataRegister.password,
       };
       const response = await API.post('/register', UserData);
-      navigate('/Login', { replace: true });
-      window.location.reload()
-      console.log(response);
+      if (response.data.messages === 'users or email already registers') {
+        toast({
+          title: 'Registers Failed',
+          description: `${response.data.messages}`,
+          status: 'error',
+          duration: 4000,
+          isClosable: true,
+          position: 'top',
+        });
+      } else {
+        toast({
+          title: 'Registers success',
+          description: `${response.data.messages}`,
+          status: 'success',
+          duration: 4000,
+          isClosable: true,
+          position: 'top',
+        });
+        navigate('/login', { replace: true });
+      }
     } catch (error) {
       console.log(error);
       throw error;

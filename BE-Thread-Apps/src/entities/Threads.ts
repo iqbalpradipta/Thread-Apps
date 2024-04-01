@@ -13,10 +13,7 @@ export class Threads {
 
   @Column({ nullable: true })
   image: string;
-
-  @Column({ nullable: true })
-  isLikes: boolean;
-
+  
   @CreateDateColumn()
   created_at: Date;
 

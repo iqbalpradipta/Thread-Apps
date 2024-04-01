@@ -41,7 +41,7 @@ function Suggest() {
                     @{data.username}
                   </Text>
                 </Box>
-                <ButtonFollow id={data.id}  />
+                <ButtonFollow id={data?.id}  />
               </Box>
             );
           })}

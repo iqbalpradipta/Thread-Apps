@@ -8,9 +8,10 @@ export default new (class FollowingController {
       const data = req.body
       data.usersFollowing = id
       data.usersFollower = res.locals.loginSession.Payload.id;
-      data.isFollow = true
       if(data.isFollow === false || null || undefined) {
         data.isFollow = true
+      } else {
+        data.isFollow = false
       }
 
       const response = await FollowingServices.followings(data, id);
@@ -39,6 +40,24 @@ export default new (class FollowingController {
       res.status(200).json(response);
     } catch (error) {
       res.status(500).json(error);
+    }
+  }
+
+  async checkFollowing(req: Request, res: Response) {
+    try {
+      const id = parseInt(req.params.id)
+      const data = req.body
+      data.usersFollowing = id
+      data.usersFollower = res.locals.loginSession.Payload.id;
+      data.isFollow = true
+      if(data.isFollow === false || null || undefined) {
+        data.isFollow = true
+      }
+
+      const response = await FollowingServices.followings(data, id);
+      res.status(200).json(response)
+    } catch (error) {
+      res.status(500).json(error)
     }
   }
 

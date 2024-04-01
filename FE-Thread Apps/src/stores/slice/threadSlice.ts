@@ -16,6 +16,7 @@ const initialDetailSlice: { data: IThreads } = {
     image: '',
     number_of_replies: 0,
     number_of_likes: 0,
+    isLikes: false,
     users: {
       username: '',
       fullName: '',

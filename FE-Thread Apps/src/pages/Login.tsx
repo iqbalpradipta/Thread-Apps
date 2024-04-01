@@ -38,16 +38,24 @@ function Login() {
 
       if (sessionStorage.getItem('token')) {
         navigate('/', { replace: true });
+        toast({
+          title: 'Login success',
+          description: `${response.messages}`,
+          status: 'success',
+          duration: 4000,
+          isClosable: true,
+          position: 'top',
+        });
+        window.location.reload();
+      } else {
+        toast({
+          title: 'Login Failed',
+          description: `${response.messages}`,
+          status: 'error',
+          duration: 2000,
+          position: 'top',
+        });
       }
-
-      toast({
-        title: 'Login success',
-        description: `Welcome ${response.username}`,
-        status: 'success',
-        duration: 4000,
-        isClosable: true,
-        position: 'top',
-      });
     } catch (error) {
       toast({
         title: `${response.messages}`,

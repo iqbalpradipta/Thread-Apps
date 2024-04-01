@@ -11,6 +11,7 @@ export default new (class RepliesService {
     try {
       await this.RepliesRepository.createQueryBuilder().insert().into(Replies).values(data).execute();
       await redisClient.del('threads')
+      await redisClient.del('replies')
       return {
         messages: 'Success Insert Replies',
         data,

@@ -9,6 +9,7 @@ const initialFollowSlice: { data: { following: IFollows[], follower: IFollows[] 
 };
 const initialFollowingSlice: {data: IFollows} = {
   data: {
+    isFollow: false,
     usersFollowing: {
       id: 0
     },
@@ -34,9 +35,7 @@ export const postFollowSlice = createSlice({
   initialState: initialFollowingSlice,
   reducers: {
     POST_FOLLOW(state, action) {
-      return {
-        ...state, ...action.payload
-      }
+        state.data = action.payload.data;
     }
   }
 })

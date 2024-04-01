@@ -1,11 +1,11 @@
 import { Avatar, Box, Button, Divider, FormControl, FormLabel, Icon, Input } from '@chakra-ui/react';
 import { LuImagePlus } from 'react-icons/lu';
 import ReplyList from './replyList';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { API } from '../../libs/api';
-import { POST_REPLY } from '../../stores/rootReducer';
+import { GET_REPLY, POST_REPLY } from '../../stores/rootReducer';
 import { RootState } from '../../stores/types';
 
 function ReplyThreads() {
@@ -36,7 +36,20 @@ function ReplyThreads() {
     }
   };
 
-  console.log('ini data', data);
+  const getReply = async () => {
+    try {
+      const response = await API.get(`/replies/threads/${id}`);
+      if (response) {
+        dispatch(GET_REPLY(response.data));
+      }
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    getReply();
+  }, []);
 
   const handleSubmit = async () => {
     try {
@@ -48,11 +61,11 @@ function ReplyThreads() {
           },
         });
         navigate(`/threads/${id}`, { replace: true });
-        window.location.reload();
+        getReply();
       } else {
         await API.post('/replies', data);
         navigate(`/threads/${id}`, { replace: true });
-        window.location.reload();
+        getReply();
       }
     } catch (error) {
       console.log(error);
@@ -68,9 +81,9 @@ function ReplyThreads() {
             <Box display="flex" gap="20px" alignContent="center" pt="20px" color="#07941E" ps="10px">
               <Avatar name="Dan Abrahmov" src="https://bit.ly/dan-abramov" />
               <Input variant="unstyled" pb="10px" resize="none" color="white" placeholder="What is Happening?!" value={data.content} name="content" onChange={handleChange} />
-              <Box fontSize="25px" display="flex">
+              <Box fontSize="25px" display="flex" w="100%">
                 <FormControl>
-                  <FormLabel htmlFor="image">
+                  <FormLabel htmlFor="image" ms="220px" mt="20px">
                     <Input type="file" id="image" name="image" style={{ display: 'none' }} onChange={handleChange} />
                     <Icon as={LuImagePlus} />
                   </FormLabel>

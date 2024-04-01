@@ -35,8 +35,8 @@ function ProfileBar() {
           <Box key={data.data.id} p="20px">
             <Box bg="#262626" w="300px" p="15px" borderRadius={15}>
               <Text fontWeight="bold">My Profile</Text>
-              <Image w="270px" h="70px" bg="red" mt={3} borderRadius={15} src="https://img.freepik.com/free-photo/grunge-paint-background_1409-1337.jpg?w=740&t=st=1707180635~exp=1707181235~hmac=10e35b2b792774036e09eb9afaeb121f7fb864f6b06e8818706a7be281b45bfd" />
-              <Avatar size="md" name="Ryan Florence" src="https://bit.ly/ryan-florence" ms="15px" bottom={5} border="2px" borderColor="black" />
+              <Image w="270px" h="70px" bg="red" mt={3} borderRadius={15} src={data.data.background_profile} />
+              <Avatar size="md" name={data.data.username} src={data.data.photo_profile} ms="15px" bottom={5} border="2px" borderColor="black" />
               <Button colorScheme="blackAlpha" variant="outline" color="white" borderRadius={25} ms="127px" mt="10px" size="xs">
                 Edit Profile
               </Button>
@@ -47,17 +47,17 @@ function ProfileBar() {
                 @{data.data.username}
               </Text>
               <Text ms="5px" fontSize="sm">
-                Ini adalah Bio yang dibuat dengan sepenuh hati. (lupa buat bio)
+                {data.data.bio}
               </Text>
               <Box mt="3px" display="flex" alignItems="center">
                 <Text ms="5px" fontSize="xs">
-                  {data.data.followingNumber}
+                  {data.data.followerNumber}
                 </Text>
                 <Text ms="5px" fontSize="xs" color="#4E4E4E">
                   Following
                 </Text>
                 <Text ms="12px" fontSize="xs">
-                  {data.data.followerNumber}
+                  {data.data.followingNumber}
                 </Text>
                 <Text ms="5px" fontSize="xs" color="#4E4E4E">
                   Followers

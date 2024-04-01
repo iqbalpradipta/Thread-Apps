@@ -5,8 +5,8 @@ import { API } from '../libs/api';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../stores/types';
-import { POST_THREAD } from '../stores/rootReducer';
-import React, { useState } from 'react';
+import { GET_THREAD, POST_THREAD } from '../stores/rootReducer';
+import React, { useEffect, useState } from 'react';
 
 function Content() {
   const dispatch = useDispatch();
@@ -33,7 +33,18 @@ function Content() {
     }
   };
 
-  console.log(`ini threads`, data)
+  async function getThreads() {
+    try {
+      const response = await API.get('/threads');
+      dispatch(GET_THREAD(response.data.data));
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  useEffect(() => {
+    getThreads();
+  }, []);
 
   const handleSubmit = async () => {
     try {
@@ -44,17 +55,12 @@ function Content() {
             'Content-Type': 'multipart/form-data',
           },
         });
-        navigate('/', { replace: true });
-        window.location.reload();
+        getThreads();
       } else {
         await API.post('/threads', data);
-        navigate('/', { replace: true });
-        window.location.reload();
+        getThreads();
       }
-
-      console.log(data)
     } catch (error) {
-      console.log(error);
       throw error;
     }
   };
@@ -64,11 +70,11 @@ function Content() {
         {token ? (
           <>
             <Box display="flex" gap="20px" alignContent="center" pt="20px" color="#07941E" ps="10px">
-              <Avatar name="Dan Abrahmov" src="https://bit.ly/dan-abramov" />
+              <Avatar name="Profile Users" src="https://mir-s3-cdn-cf.behance.net/project_modules/disp/ce54bf11889067.562541ef7cde4.png" />
               <Input variant="unstyled" pb="10px" resize="none" color="white" placeholder="What is Happening?!" value={data.content} name="content" onChange={handleChange} />
-              <Box fontSize="25px" display="flex">
-                <FormControl>
-                  <FormLabel htmlFor="image">
+              <Box fontSize="25px" display="flex" w="100%">
+                <FormControl mt="20px">
+                  <FormLabel htmlFor="image" ms="220px">
                     <Input type="file" id="image" name="image" style={{ display: 'none' }} onChange={handleChange} />
                     <Icon as={LuImagePlus} />
                   </FormLabel>

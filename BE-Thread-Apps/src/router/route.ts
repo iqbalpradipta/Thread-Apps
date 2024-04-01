@@ -11,8 +11,9 @@ import uploadFiles from '../middlewares/uploadFiles';
 const Route = express.Router();
 
 //threads
-Route.get('/threads', ThreadsControllers.getThreads);
-Route.get('/threads/:id', ThreadsControllers.getThreadsById);
+Route.get('/threads', jwtAuthentication.Auth, ThreadsControllers.getThreads);
+Route.get('/threads/:id', jwtAuthentication.Auth, ThreadsControllers.getThreadsById);
+Route.get('/threads/user/:id', jwtAuthentication.Auth, ThreadsControllers.getThreadsLogin);
 Route.post('/threads', jwtAuthentication.Auth, uploadFiles.upload('image'), ThreadsControllers.insertThreads);
 Route.put('/threads/:id', jwtAuthentication.Auth, uploadFiles.upload('image'), ThreadsControllers.updateThreads);
 Route.delete('/threads/:id', jwtAuthentication.Auth, ThreadsControllers.deleteThreads);
@@ -20,7 +21,7 @@ Route.delete('/threads/:id', jwtAuthentication.Auth, ThreadsControllers.deleteTh
 //Auth
 Route.post('/register', AuthControllers.register);
 Route.post('/login', AuthControllers.login);
-Route.get('/check', AuthControllers.check)
+Route.get('/check', AuthControllers.check);
 
 //Users
 Route.get('/users', UsersControllers.getUser);
@@ -42,8 +43,8 @@ Route.post('/likes', jwtAuthentication.Auth, LikesControllers.insertLikes);
 Route.get('/likes', jwtAuthentication.Auth, LikesControllers.getLikes);
 
 //Followings
-Route.get('/following', jwtAuthentication.Auth, FollowingControllers.getFollowing)
-Route.get('/follower', jwtAuthentication.Auth, FollowingControllers.getFollower)
+Route.get('/following', jwtAuthentication.Auth, FollowingControllers.getFollowing);
+Route.get('/follower', jwtAuthentication.Auth, FollowingControllers.getFollower);
 Route.post('/following/:id', jwtAuthentication.Auth, FollowingControllers.followings);
 
 export default Route;

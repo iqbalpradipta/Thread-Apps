@@ -6,23 +6,20 @@ import Home from './pages/Home';
 import Search from './pages/Search';
 import Following from './pages/Following';
 import Profile from './pages/Profile';
-import { RootState } from './stores/types';
-import { useDispatch, useSelector } from 'react-redux';
-import React, { useEffect } from 'react';
-import { API } from './libs/api';
-import { AUTH_CHECK } from './stores/rootReducer';
 
 function App() {
+  const token = sessionStorage.getItem('token')
+
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/search" element={<Search />} />
-          <Route path="/threads/:id" element={<DetailPage />} />
-          <Route path="/following" element={<Following />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/" element={token ? <Home /> : <Navigate to="/login" />} />
+          <Route path="/search" element={token ? <Search /> : <Navigate to="/login" />} />
+          <Route path="/threads/:id" element={token ? <DetailPage /> : <Navigate to="/login" />} />
+          <Route path="/following" element={token ? <Following /> : <Navigate to="/login" />} />
+          <Route path="/profile" element={token ? <Profile /> : <Navigate to="/login" />} />
+          <Route path="/login" element={!token ? <Login /> : <Navigate to='/' />} />
           <Route path="/Register" element={<Register />} />
         </Routes>
       </BrowserRouter>

@@ -6,9 +6,21 @@ const initialUsersSlice: { data: IUsers } = {
     username: '',
     fullName: '',
     email: '',
+    bio: '',
     photo_profile: '',
+    background_profile: '',
   },
 };
+
+const updateUsersSlice: { data: IUsers } = {
+  data: {
+    fullName: '',
+    email:  '',
+    bio: '',
+    photo_profile: '',
+    background_profile: '',
+  }
+}
 
 const data: IUsers[] = [];
 const initialStateUsers = {
@@ -21,6 +33,18 @@ export const usersSlice = createSlice({
   reducers: {
     GET_USERS: (state, action) => {
       state.data = action.payload;
+    },
+  },
+});
+
+export const usersUpdateSlice = createSlice({
+  name: 'users',
+  initialState: updateUsersSlice,
+  reducers: {
+    UPDATE_USERS: (state, action) => {
+      return {
+        ...state, ...action.payload,
+      };
     },
   },
 });

@@ -11,7 +11,12 @@ export default new (class UserServices {
       await redisClient.del('suggest')
       let data = await redisClient.get('suggest');
       if (!data) {
-        const getUser = await this.UsersRepository.createQueryBuilder('users').leftJoinAndSelect('users.following', 'following').leftJoinAndSelect('users.threads', 'threads').where('users.id != :token', { token }).getMany();
+        const getUser = await this.UsersRepository
+        .createQueryBuilder('users')
+        .leftJoinAndSelect('users.following', 'following')
+        .leftJoinAndSelect('users.threads', 'threads')
+        .where('users.id != :token', { token })
+        .getMany();
         const stringData = JSON.stringify(getUser);
         data = stringData;
         await redisClient.set('suggest', stringData);
@@ -28,9 +33,16 @@ export default new (class UserServices {
 
   async getUsers(): Promise<object> {
     try {
+      await redisClient.del('usersAll')
       let data = await redisClient.get('usersAll');
       if (!data) {
-        const getUser = await this.UsersRepository.createQueryBuilder('users').leftJoinAndSelect('users.following', 'following').leftJoinAndSelect('users.threads', 'threads').loadRelationCountAndMap('users.followingNumber', 'users.following').loadRelationCountAndMap('users.followerNumber', 'users.follower').getMany();
+        const getUser = await this.UsersRepository
+        .createQueryBuilder('users')
+        .leftJoinAndSelect('users.following', 'following')
+        .leftJoinAndSelect('users.threads', 'threads')
+        .loadRelationCountAndMap('users.followingNumber', 'users.following')
+        .loadRelationCountAndMap('users.followerNumber', 'users.follower')
+        .getMany();
         const stringData = JSON.stringify(getUser);
         data = stringData;
         await redisClient.set('usersAll', data);
@@ -66,7 +78,17 @@ export default new (class UserServices {
 
   async updateUsers(data: object, id: any): Promise<object> {
     try {
-      const updateUsers = await this.UsersRepository.createQueryBuilder().update(Users).set(data).where(id).execute();
+      const updateUsers = await this.UsersRepository
+      .createQueryBuilder()
+      .update(Users)
+      .set(data)
+      .where("users.id = :id", { id })
+      .execute();
+      
+      if (updateUsers.affected === 0) {
+        throw new Error('User not found');
+      }
+
       return {
         messages: 'update users Success',
         data: data,

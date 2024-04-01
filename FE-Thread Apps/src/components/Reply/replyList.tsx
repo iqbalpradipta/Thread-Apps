@@ -19,13 +19,10 @@ function ReplyList() {
       if (response) {
         dispatch(GET_REPLY(response.data));
       }
-      console.log('ini data', response.data);
     } catch (error) {
       throw error;
     }
   };
-
-  console.log('data reply', reply);
 
   useEffect(() => {
     getReply();

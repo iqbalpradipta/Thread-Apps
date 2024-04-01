@@ -7,7 +7,11 @@ export default new (class FollowingServices {
 
   async followings(data: object | any, id: number): Promise<object> {
     try {
-      const getFollowing = await this.FollowingRepository.createQueryBuilder('following').leftJoinAndSelect('following.usersFollowing', 'usersFollowing').where({ usersFollowing: id, usersFollower: data.usersFollower }).getOne();
+      const getFollowing = await this.FollowingRepository
+      .createQueryBuilder('following')
+      .leftJoinAndSelect('following.usersFollowing', 'usersFollowing')
+      .where({ usersFollowing: id, usersFollower: data.usersFollower })
+      .getOne();
 
       if (getFollowing) {
         await this.unfollow(getFollowing.id);
@@ -42,6 +46,21 @@ export default new (class FollowingServices {
       };
     } catch (error) {
       throw error;
+    }
+  }
+
+  async checkFollowing(id, data): Promise<object> {
+    try {
+      const checkFollowing = await this.FollowingRepository.createQueryBuilder('following')
+      .leftJoinAndSelect('following.usersFollowing', 'usersFollowing')
+      .where({ usersFollowing: id, usersFollower: data.usersFollower })
+      .getOne()
+      return {
+        messages: 'success Check Following',
+        data,
+      }
+    } catch (error) {
+      throw error
     }
   }
 
