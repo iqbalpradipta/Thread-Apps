@@ -15,7 +15,6 @@ export default new (class ThreadService {
 
   async getThreads(): Promise<object> {
     try {
-      await redisClient.del('threads');
       let data = await redisClient.get('threads');
       if (!data) {
         const getThreadsAll = await this.ThreadRepository.createQueryBuilder('threads')
@@ -42,7 +41,6 @@ export default new (class ThreadService {
 
   async getThreadsById(id: number): Promise<object> {
     try {
-      await redisClient.del('threadsID');
       let data = await redisClient.get('threadsID');
       if (!data) {
         const getThreads = await this.ThreadRepository.createQueryBuilder('threads')
@@ -116,7 +114,8 @@ export default new (class ThreadService {
 
   async updateThreads(data: object, id: number): Promise<object> {
     try {
-      const updateThreads = await this.ThreadRepository.createQueryBuilder().update(Threads).set(data).where({ id }).execute();
+      const updateThreads = await this.ThreadRepository.createQueryBuilder()
+      .update(Threads).set(data).where({ id }).execute();
       return {
         messages: 'success update Threads',
         data: data,

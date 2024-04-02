@@ -27,7 +27,7 @@ function Sidebar() {
             <Text textColor="#04A51E" fontWeight="bold" fontSize="50px" p={3}>
               circle
             </Text>
-            <Link as={ReactRouterLink} to="/" display="flex" alignItems="center" gap="10px" p={3} fontSize="xl">
+            <Link as={ReactRouterLink} to="/" display="flex" alignItems="center" gap="10px" p={3} fontSize="xl" >
               <BiSolidHomeCircle />
               <Text>Home</Text>
             </Link>

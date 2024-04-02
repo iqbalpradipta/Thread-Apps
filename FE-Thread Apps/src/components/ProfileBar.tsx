@@ -5,12 +5,14 @@ import { API } from '../libs/api';
 import { GET_USERS } from '../stores/rootReducer';
 import { useEffect } from 'react';
 import { JwtPayload, jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
 
 function ProfileBar() {
   const dispatch = useDispatch();
   const data = useSelector((state: RootState) => state.users);
   const token = sessionStorage.getItem('token');
   const decodeToken = token ? jwtDecode<JwtPayload>(token) : null;
+  const navigate = useNavigate()
 
   const getUsers = async (id: string) => {
     try {
@@ -37,7 +39,7 @@ function ProfileBar() {
               <Text fontWeight="bold">My Profile</Text>
               <Image w="270px" h="70px" bg="red" mt={3} borderRadius={15} src={data.data.background_profile} />
               <Avatar size="md" name={data.data.username} src={data.data.photo_profile} ms="15px" bottom={5} border="2px" borderColor="black" />
-              <Button colorScheme="blackAlpha" variant="outline" color="white" borderRadius={25} ms="127px" mt="10px" size="xs">
+              <Button  onClick={() => navigate(`/profile`)} colorScheme="blackAlpha" variant="outline" color="white" borderRadius={25} ms="127px" mt="10px" size="xs">
                 Edit Profile
               </Button>
               <Text ms="5px" fontWeight="bold" fontSize="20px">

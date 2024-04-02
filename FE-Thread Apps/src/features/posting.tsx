@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Divider, Flex, Text, Image, Link } from '@chakra-ui/react';
+import { Avatar, Box, Button, Divider, Flex, Text, Image, Link, IconButton, CloseButton, useDisclosure, Fade } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { MdOutlineComment } from 'react-icons/md';
 import { IThreads } from '../types/threadsInterface';
@@ -8,6 +8,8 @@ import { RootState } from '../stores/types';
 import React, { useEffect } from 'react';
 import { GET_THREAD } from '../stores/rootReducer';
 import ButtonLikes from '../components/Like/ButtonLikes';
+import DeleteThreads from './deleteThreads';
+import { timeAgo } from './timeConverstion';
 
 function Posting() {
   const dispatch = useDispatch();
@@ -41,8 +43,9 @@ function Posting() {
               @{thread?.users?.username}
             </Text>
             <Text textColor="#828282" fontSize="12px" pt="2px">
-              • {thread.created_at}
+              • {timeAgo(thread.created_at)}
             </Text>
+            <DeleteThreads />l
           </Box>
           <Link textColor="#C6C6C6" fontSize="14px" ps="43px">
             {thread.content}

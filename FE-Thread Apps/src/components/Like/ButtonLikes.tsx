@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../stores/types';
 import React, { useEffect, useState } from 'react';
-import { POST_LIKE } from '../../stores/rootReducer'; // Memperbarui import
+import { GET_THREAD, POST_LIKE } from '../../stores/rootReducer'; // Memperbarui import
 import { Button, Text } from '@chakra-ui/react';
 import { FaHeart } from 'react-icons/fa';
 import { CiHeart } from 'react-icons/ci';
@@ -21,6 +21,15 @@ const ButtonLikes: React.FC<LikeCount> = ({ count, threads }) => {
     return storedValue ? JSON.parse(storedValue) : false;
   });
 
+  async function getThreads() {
+    try {
+      const response = await API.get('/threads');
+      dispatch(GET_THREAD(response.data.data));
+    } catch (error) {
+      throw error;
+    }
+  }
+
   useEffect(() => {
     localStorage.setItem(`isLike-${threads}`, JSON.stringify(isLike));
   }, [isLike, threads]);
@@ -30,13 +39,14 @@ const ButtonLikes: React.FC<LikeCount> = ({ count, threads }) => {
       const getId = { ...likes, threads };
       if (isLike) {
         await API.post('/likes', getId);
-        dispatch(POST_LIKE({ ...likes, [`${threads}`]: count - 1}));
+        dispatch(POST_LIKE({ ...likes, [`${threads}`]: count - 1 }));
+        getThreads();
       } else {
         await API.post('/likes', getId);
         dispatch(POST_LIKE({ ...likes, [`${threads}`]: count + 1 }));
+        getThreads();
       }
       setIsLike(!isLike);
-
     } catch (error) {
       throw error;
     }

@@ -1,7 +1,6 @@
 import { Request, Response, response } from 'express';
 import ThreadService from '../services/ThreadService';
 import { createThreadsScheme } from '../utils/validator/ThreadsValidator';
-import cloudinaryConfig from '../libs/cloudinary';
 import ThreadQueue from '../queue/ThreadQueue';
 
 export default new (class ThreadsController {

@@ -3,7 +3,7 @@ import Layout from '../../layout/layout';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../stores/types';
 import { API } from '../../libs/api';
-import { GET_FOLLOW } from '../../stores/rootReducer';
+import { GET_FOLLOW, GET_USERS } from '../../stores/rootReducer';
 import { useEffect } from 'react';
 function FollowingComponent() {
   const dispatch = useDispatch();

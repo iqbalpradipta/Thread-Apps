@@ -6,6 +6,7 @@ import { GET_REPLY } from '../../stores/rootReducer';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { IReply } from '../../types/replyInterface';
+import { timeAgo } from '../../features/timeConverstion';
 
 function ReplyList() {
   const dispatch = useDispatch();
@@ -44,7 +45,7 @@ function ReplyList() {
                   @{replyItem.users?.username || ''}
                 </Text>
                 <Text textColor="#828282" fontSize="12px" pt="2px">
-                  • {replyItem.created_at}
+                  • {timeAgo(replyItem.created_at)}
                 </Text>
               </Box>
               <Text textColor="#C6C6C6" fontSize="14px" ps="43px">

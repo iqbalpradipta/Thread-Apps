@@ -27,7 +27,8 @@ Route.get('/check', AuthControllers.check);
 Route.get('/users', UsersControllers.getUser);
 Route.get('/users/suggest', jwtAuthentication.Auth, UsersControllers.Suggest);
 Route.get('/users/:id', jwtAuthentication.Auth, UsersControllers.getUserById);
-Route.put('/users/:id', jwtAuthentication.Auth, UsersControllers.updateUser);
+Route.put('/users/:id', jwtAuthentication.Auth, uploadFiles.upload('photo_profile'), UsersControllers.updateUser);
+Route.put('/users/bg/:id', jwtAuthentication.Auth, uploadFiles.upload('background_profile'), UsersControllers.updateBg);
 Route.delete('/users/:id', jwtAuthentication.Auth, UsersControllers.deleteUser);
 
 //Replies

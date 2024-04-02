@@ -1,5 +1,10 @@
 import { Request, Response } from 'express';
 import UsersServices from '../services/UsersServices';
+import cloudinaryConfig from '../libs/cloudinary';
+import { promisify } from 'util';
+import * as fs from 'fs';
+
+const deleteFile = promisify(fs.unlink);
 
 export default new (class UsersController {
   async Suggest(req: Request, res: Response) {
@@ -39,7 +44,38 @@ export default new (class UsersController {
         fullName: req.body.fullName,
         username: req.body.username,
         bio: req.body.bio,
+        photo_profile: res.locals.filename,
       };
+      let img = null;
+      if (req.file) {
+        const cloudinary = await cloudinaryConfig.destination(data.photo_profile);
+        data.photo_profile = cloudinary;
+        await deleteFile(`src/uploadFiles/${res.locals.filename}`);
+      } else {
+        data.photo_profile = img;
+      }
+
+      const response = await UsersServices.updateUsers(data, id);
+      res.status(200).json(response);
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  }
+  async updateBg(req: Request, res: Response) {
+    try {
+      const id = req.params.id;
+      const data = {
+        background_profile: res.locals.filename,
+      };
+      let img = null;
+      if (req.file) {
+        const cloudinary = await cloudinaryConfig.destination(data.background_profile);
+        data.background_profile = cloudinary;
+        await deleteFile(`src/uploadFiles/${res.locals.filename}`);
+      } else {
+        data.background_profile = img;
+      }
+
       const response = await UsersServices.updateUsers(data, id);
       res.status(200).json(response);
     } catch (error) {

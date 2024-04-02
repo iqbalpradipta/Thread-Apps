@@ -98,6 +98,28 @@ export default new (class UserServices {
     }
   }
 
+  async updateBg(data: object, id: any): Promise<object> {
+    try {
+      const updateUsers = await this.UsersRepository
+      .createQueryBuilder()
+      .update(Users)
+      .set(data)
+      .where("users.id = :id", { id })
+      .execute();
+      
+      if (updateUsers.affected === 0) {
+        throw new Error('User not found');
+      }
+
+      return {
+        messages: 'update users Success',
+        data: data,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async deleteUsers(id: any): Promise<object> {
     try {
       const deleteUsers = await this.UsersRepository.createQueryBuilder().delete().from(Users).where(id).execute();
