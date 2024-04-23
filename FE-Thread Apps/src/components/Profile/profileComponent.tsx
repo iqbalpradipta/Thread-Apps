@@ -1,8 +1,8 @@
-import { Avatar, Link, Box, Button, Card, CardBody, Center, Divider, Flex, Heading, Image, Input, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text, InputGroup, InputLeftElement, InputRightElement, FormControl, FormLabel, Icon } from '@chakra-ui/react';
+import { Avatar, Link, Box, Button, Center, Divider, Flex, Image, Input, Tab, TabList, TabPanel, TabPanels, Tabs, Text, InputGroup, InputLeftElement, InputRightElement, FormControl, FormLabel } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../stores/types';
 import { API } from '../../libs/api';
-import { GET_THREAD, GET_USERS, UPDATE_USERS } from '../../stores/rootReducer';
+import { GET_THREAD, GET_USERS } from '../../stores/rootReducer';
 import { useEffect, useState } from 'react';
 import { JwtPayload, jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
@@ -12,8 +12,7 @@ import { MdOutlineComment } from 'react-icons/md';
 import EditProfile from './editProfile';
 import { timeAgo } from '../../features/timeConverstion';
 import DeleteThreads from '../../features/deleteThreads';
-import { EditIcon, ExternalLinkIcon } from '@chakra-ui/icons';
-import { LuImagePlus } from 'react-icons/lu';
+import { EditIcon } from '@chakra-ui/icons';
 function ProfileComponent() {
   const dispatch = useDispatch();
   const data = useSelector((state: RootState) => state.users);
