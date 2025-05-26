@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import * as bcrypt from 'bcrypt';
 import UsersServices from '../services/UsersServices';
 import cloudinaryConfig from '../libs/cloudinary';
 import { promisify } from 'util';
@@ -43,16 +44,19 @@ export default new (class UsersController {
       const data = {
         fullName: req.body.fullName,
         username: req.body.username,
+        password: req.body.password,
         bio: req.body.bio,
         photo_profile: res.locals.filename,
       };
-      let img = null;
       if (req.file) {
         const cloudinary = await cloudinaryConfig.destination(data.photo_profile);
         data.photo_profile = cloudinary;
         await deleteFile(`src/uploadFiles/${res.locals.filename}`);
-      } else {
-        data.photo_profile = img;
+      }
+
+      if(data.password) {
+        const hashPassword = await bcrypt.hash(data.password, 10);
+        data.password = hashPassword;
       }
 
       const response = await UsersServices.updateUsers(data, id);
@@ -61,6 +65,7 @@ export default new (class UsersController {
       res.status(500).json(error);
     }
   }
+
   async updateBg(req: Request, res: Response) {
     try {
       const id = req.params.id;

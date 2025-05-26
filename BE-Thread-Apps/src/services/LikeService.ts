@@ -27,7 +27,6 @@ export default new (class LikesService {
       .values(data)
       .execute();
       
-      await redisClient.del('threads')
       return {
         messages: 'success like threads',
         data,

@@ -4,7 +4,7 @@ import { Users } from '../entities/Users';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import 'dotenv/config';
-import { Request, Response, response } from 'express';
+import { Request, Response } from 'express';
 
 export default new (class AuthServices {
   private readonly AuthRepository: Repository<Users> = AppDataSource.getRepository(Users);

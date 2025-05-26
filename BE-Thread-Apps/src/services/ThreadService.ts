@@ -1,38 +1,39 @@
-import { Repository } from 'typeorm';
-import { AppDataSource } from '../data-source';
-import { Threads } from '../entities/Threads';
-import { createThreadsScheme } from '../utils/validator/ThreadsValidator';
-import * as express from 'express';
-import cloudinaryConfig from '../libs/cloudinary';
-import { promisify } from 'util';
-import * as fs from 'fs';
-import { redisClient } from '../libs/redis';
-
-const deleteFile = promisify(fs.unlink);
+import { Repository } from "typeorm";
+import { AppDataSource } from "../data-source";
+import { Threads } from "../entities/Threads";
 
 export default new (class ThreadService {
-  private readonly ThreadRepository: Repository<Threads> = AppDataSource.getRepository(Threads);
+  private readonly ThreadRepository: Repository<Threads> =
+    AppDataSource.getRepository(Threads);
 
   async getThreads(): Promise<object> {
     try {
-      let data = await redisClient.get('threads');
-      if (!data) {
-        const getThreadsAll = await this.ThreadRepository.createQueryBuilder('threads')
-          .orderBy('threads.created_at', 'DESC')
-          .leftJoinAndSelect('threads.users', 'users')
-          .leftJoinAndSelect('threads.replies', 'replies')
-          .select(['threads.id', 'threads.content', 'threads.image', 'threads.created_at', 'threads.updated_at', 'users.username', 'users.email', 'users.fullName', 'users.photo_profile', 'replies.id', 'replies.content', 'replies.image'])
-          .loadRelationCountAndMap('threads.number_of_replies', 'threads.replies')
-          .loadRelationCountAndMap('threads.number_of_likes', 'threads.likes')
-          .getMany();
-        const stringData = JSON.stringify(getThreadsAll);
-        data = stringData;
-        await redisClient.set('threads', stringData);
-      }
-      const parseData = JSON.parse(data);
+      const getThreadsAll = await this.ThreadRepository.createQueryBuilder(
+        "threads"
+      )
+        .orderBy("threads.created_at", "DESC")
+        .leftJoinAndSelect("threads.users", "users")
+        .leftJoinAndSelect("threads.replies", "replies")
+        .select([
+          "threads.id",
+          "threads.content",
+          "threads.image",
+          "threads.created_at",
+          "threads.updated_at",
+          "users.username",
+          "users.email",
+          "users.fullName",
+          "users.photo_profile",
+          "replies.id",
+          "replies.content",
+          "replies.image",
+        ])
+        .loadRelationCountAndMap("threads.number_of_replies", "threads.replies")
+        .loadRelationCountAndMap("threads.number_of_likes", "threads.likes")
+        .getMany();
       return {
-        messages: 'Success get Threads',
-        data: parseData,
+        messages: "Success get Threads",
+        data: getThreadsAll,
       };
     } catch (error) {
       throw error;
@@ -41,83 +42,68 @@ export default new (class ThreadService {
 
   async getThreadsById(id: number): Promise<object> {
     try {
-      let data = await redisClient.get('threadsID');
-      if (!data) {
-        const getThreads = await this.ThreadRepository.createQueryBuilder('threads')
-          .leftJoinAndSelect('threads.users', 'users')
-          .leftJoinAndSelect('threads.replies', 'replies')
-          .select(['threads.id', 'threads.content', 'threads.image', 'threads.created_at', 'threads.updated_at', 'users.username', 'users.email', 'users.fullName', 'users.photo_profile', 'replies.id', 'replies.content', 'replies.image'])
-          .loadRelationCountAndMap('threads.number_of_replies', 'threads.replies')
-          .loadRelationCountAndMap('threads.number_of_likes', 'threads.likes')
-          .where({ id })
-          .getOneOrFail();
-
-        const stringData = JSON.stringify(getThreads);
-        data = stringData;
-        await redisClient.set('threadsID', stringData);
-      } else {
-        await redisClient.del('threadsID');
-        const getThreads = await this.ThreadRepository.createQueryBuilder('threads')
-          .leftJoinAndSelect('threads.users', 'users')
-          .leftJoinAndSelect('threads.replies', 'replies')
-          .select(['threads.id', 'threads.content', 'threads.image', 'threads.created_at', 'threads.updated_at', 'users.username', 'users.email', 'users.fullName', 'users.photo_profile', 'replies.id', 'replies.content', 'replies.image'])
-          .loadRelationCountAndMap('threads.number_of_replies', 'threads.replies')
-          .loadRelationCountAndMap('threads.number_of_likes', 'threads.likes')
-          .where({ id })
-          .getOneOrFail();
-
-        const stringData = JSON.stringify(getThreads);
-        data = stringData;
-        await redisClient.set('threadsID', stringData);
-      }
-      const parseData = JSON.parse(data);
+      const getThreads = await this.ThreadRepository.createQueryBuilder(
+        "threads"
+      )
+        .leftJoinAndSelect("threads.users", "users")
+        .leftJoinAndSelect("threads.replies", "replies")
+        .select([
+          "threads.id",
+          "threads.content",
+          "threads.image",
+          "threads.created_at",
+          "threads.updated_at",
+          "users.username",
+          "users.email",
+          "users.fullName",
+          "users.photo_profile",
+          "replies.id",
+          "replies.content",
+          "replies.image",
+        ])
+        .loadRelationCountAndMap("threads.number_of_replies", "threads.replies")
+        .loadRelationCountAndMap("threads.number_of_likes", "threads.likes")
+        .where({ id })
+        .getOneOrFail();
       return {
         messages: `success get threads with id`,
-        data: parseData,
+        data: getThreads,
       };
     } catch (error) {
       throw error;
     }
   }
 
-  async insertThreads(req: express.Request, res: express.Response): Promise<object> {
+  async insertThreads(data: object): Promise<object> {
     try {
-      const data = req.body;
-      data.users = res.locals.loginSession.Payload;
-      let img = null;
-      if (req.file) {
-        data.image = res.locals.filename;
-        const cloudinary = await cloudinaryConfig.destination(data.image);
-        data.image = cloudinary;
-        await deleteFile(`src/uploadFiles/${res.locals.filename}`);
-      } else {
-        data.image = img;
-      }
+      await this.ThreadRepository.createQueryBuilder()
+        .insert()
+        .into(Threads)
+        .values(data)
+        .execute();
 
-      const { error, value } = createThreadsScheme.validate(data);
-      if (!value) {
-        return res.status(400).json(error);
-      }
-
-      await this.ThreadRepository.createQueryBuilder().insert().into(Threads).values(data).execute();
-      await redisClient.del('threads');
-      await redisClient.del('threadsID');
-      res.status(200).json({
-        messages: 'success create Threads',
+      return {
+        messages: "success create Threads",
         data,
-      });
+      };
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ error });
+      throw error
     }
   }
 
   async updateThreads(data: object, id: number): Promise<object> {
     try {
       const updateThreads = await this.ThreadRepository.createQueryBuilder()
-      .update(Threads).set(data).where({ id }).execute();
+        .update(Threads)
+        .set(data)
+        .where("threads.id = :id", { id })
+        .execute();
+
+        if (updateThreads.affected === 0) {
+          throw new Error("User not found");
+        }
       return {
-        messages: 'success update Threads',
+        messages: "success update Threads",
         data: data,
       };
     } catch (error) {
@@ -128,17 +114,32 @@ export default new (class ThreadService {
 
   async getThreadsLogin(id): Promise<object> {
     try {
-      const getThreadsLogin = await this.ThreadRepository.createQueryBuilder('threads')
-        .orderBy('threads.created_at', 'DESC')
-        .leftJoinAndSelect('threads.users', 'users')
-        .leftJoinAndSelect('threads.replies', 'replies')
-        .select(['threads.id', 'threads.content', 'threads.image', 'threads.created_at', 'threads.updated_at', 'users.username', 'users.email', 'users.fullName', 'users.photo_profile', 'replies.id', 'replies.content', 'replies.image'])
-        .loadRelationCountAndMap('threads.number_of_replies', 'threads.replies')
-        .loadRelationCountAndMap('threads.number_of_likes', 'threads.likes')
-        .where('threads.users = :id', { id })
+      const getThreadsLogin = await this.ThreadRepository.createQueryBuilder(
+        "threads"
+      )
+        .orderBy("threads.created_at", "DESC")
+        .leftJoinAndSelect("threads.users", "users")
+        .leftJoinAndSelect("threads.replies", "replies")
+        .select([
+          "threads.id",
+          "threads.content",
+          "threads.image",
+          "threads.created_at",
+          "threads.updated_at",
+          "users.username",
+          "users.email",
+          "users.fullName",
+          "users.photo_profile",
+          "replies.id",
+          "replies.content",
+          "replies.image",
+        ])
+        .loadRelationCountAndMap("threads.number_of_replies", "threads.replies")
+        .loadRelationCountAndMap("threads.number_of_likes", "threads.likes")
+        .where("threads.users = :id", { id })
         .getMany();
       return {
-        messages: 'Succes getThreads By Login',
+        messages: "Succes getThreads By Login",
         data: getThreadsLogin,
       };
     } catch (error) {
@@ -148,10 +149,14 @@ export default new (class ThreadService {
 
   async deleteThreads(id: number): Promise<object> {
     try {
-      const deleteThreads = await this.ThreadRepository.createQueryBuilder().delete().from(Threads).where({ id }).execute();
+      const deleteThreads = await this.ThreadRepository.createQueryBuilder()
+        .delete()
+        .from(Threads)
+        .where({ id })
+        .execute();
 
       return {
-        messages: 'success delete Threads',
+        messages: "success delete Threads",
       };
     } catch (error) {
       throw error;

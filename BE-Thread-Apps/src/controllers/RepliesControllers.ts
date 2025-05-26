@@ -61,11 +61,16 @@ export default new (class RepliesControllers {
   async updateReplies(req: Request, res: Response) {
     try {
       const id = parseInt(req.params.id);
-      const decode = res.locals.decodeData
-      const idUser = decode.Payload.id
 
       const data = req.body;
-      data.users = idUser;
+      data.users = res.locals.loginSession.Payload;
+
+      if (req.file) {
+        data.image = res.locals.filename;
+        const cloudinary = await cloudinaryConfig.destination(data.image);
+        data.image = cloudinary
+        await deleteFile(`src/uploadFiles/${res.locals.filename}`)
+      }
 
       const response = await RepliesService.updateReplies(data, id);
       res.status(200).json(response);

@@ -1,7 +1,12 @@
-import { Request, Response, response } from 'express';
+import { Request, Response } from 'express';
 import ThreadService from '../services/ThreadService';
 import { createThreadsScheme } from '../utils/validator/ThreadsValidator';
-import ThreadQueue from '../queue/ThreadQueue';
+import cloudinaryConfig from "../libs/cloudinary";
+import { promisify } from "util";
+import * as fs from "fs";
+
+const deleteFile = promisify(fs.unlink);
+
 
 export default new (class ThreadsController {
   async getThreads(req: Request, res: Response) {
@@ -38,23 +43,41 @@ export default new (class ThreadsController {
 
 
   async insertThreads(req: Request, res: Response) {
-    ThreadService.insertThreads(req, res);
+    try {
+      const data = req.body;
+      data.users = res.locals.loginSession.Payload;
+      let img = null;
+      if (req.file) {
+        data.image = res.locals.filename;
+        const cloudinary = await cloudinaryConfig.destination(data.image);
+        data.image = cloudinary;
+        await deleteFile(`src/uploadFiles/${res.locals.filename}`);
+      } else {
+        data.image = img;
+      }
+
+      const response = await ThreadService.insertThreads(data);
+
+      res.status(200).json(response)
+    } catch (error) {
+      res.status(500).json(error)
+    }
   }
 
   async updateThreads(req: Request, res: Response) {
     try {
-      const decode = res.locals.decodeData;
-      const idUser = decode.Payload.id;
       const id = parseInt(req.params.id);
       const data = req.body;
-      data.users = idUser;
+      data.users = res.locals.loginSession.Payload;
 
       const response = await ThreadService.updateThreads(data, id);
       res.status(200).json(response);
     } catch (error) {
+      console.log(error)
       res.status(500).json(error);
     }
   }
+
   async deleteThreads(req: Request, res: Response) {
     try {
       const id = parseInt(req.params.id, 10);

@@ -28,7 +28,6 @@ export default new (class FollowingServices {
         data,
       };
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }
